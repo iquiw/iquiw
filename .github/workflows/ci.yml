@@ -37,6 +37,23 @@ jobs:
           path: profile/trophy.svg
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - uses: actions/checkout@v6
+        with:
+          repository: iquiw/emacstreak
+          path: emacstreak
+
+      - name: Setup Emacs
+        uses: purcell/setup-emacs@master
+        with:
+          version: 30.2
+
+      - name: Generate streak stats card
+        run: |
+          emacs --batch -L emacstreak -l emacstreak/emacstreak.el --eval '(emacstreak-save-svg "iquiw" "profile/streak.svg")'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EMACSTREAK_THEME: nord
+
       - name: Commit cards
         run: |
           git config user.name "github-actions[bot]"
